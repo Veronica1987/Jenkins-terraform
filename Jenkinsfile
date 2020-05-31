@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-      PATH = "${PATH}:${getTerraformPath()}"
+      PATH = "${PATH}:${getTerraformPath()}:${getAnsiblePath()}"
 }
     stages {
         stage('S3 - create bucket') {
@@ -32,6 +32,11 @@ pipeline {
 def getTerraformPath(){
   def tfHome = tool name: 'Terraform-12', type: 'terraform'
   return tfHome
+}
+
+def getAnsiblePath(){
+  def ansHome = tool name: 'Ansible', type: 'ansible'
+  return ansHome
 }
 
 //Use the Jenkins pipeline Syntax to update tfHome
