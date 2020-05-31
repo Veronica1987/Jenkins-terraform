@@ -8,7 +8,7 @@ pipeline {
             steps {
                 echo 'Creating bucket'
                 script{
-                  getTerraformPath('jenkinsterraformbucket1215')
+                  createS3Bucket('jenkinsterraformbucket1215')
                 }
             }
         }
