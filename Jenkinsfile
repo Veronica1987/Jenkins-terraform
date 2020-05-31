@@ -4,16 +4,20 @@ pipeline {
       PATH = "${PATH}:${getTerraformPath()}"
 }
     stages {
-        stage('terraform init') {
+        stage('terraform init and apply -dev') {
             steps {
-                echo 'Building..'
+                echo 'Building dev..'
+                sh sh label: '', returnStatus: true, script: 'terraform workspace new dev'
                 sh "terraform init"
+                sh "terraform apply -auto-approve -var-file=dev.tfvars"
             }
         }
-        stage('terraform apply') {
+        stage('terraform init apply and apply -prod') {
             steps {
-                echo 'Building..'
-                sh "terraform apply -auto-approve"
+                echo 'Building Prod..'
+                sh label: '', returnStatus: true, script: 'terraform workspace new prod'
+                sh "terraform init"
+                sh "terraform apply -auto-approve -var-file=prod.tfvars"
             }
         }
     }
