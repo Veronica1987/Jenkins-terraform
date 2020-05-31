@@ -7,9 +7,7 @@ pipeline {
         stage('S3 - create bucket') {
             steps {
                 echo 'Creating bucket'
-                script{
-                  createS3Bucket('jenkinsterraformbucket1215')
-                }
+                sh "ansible-playbook s3-bucket.yml"
             }
         }
         stage('terraform init and apply -dev') {
@@ -17,7 +15,7 @@ pipeline {
                 echo 'Building dev..'
                 sh label: '', returnStatus: true, script: 'terraform workspace new dev'
                 sh "terraform init"
-                sh "terraform apply -auto-approve -var-file=dev.tfvars"
+                sh "ansible-playbook terraform.yml"
             }
         }
         stage('terraform init apply and apply -prod') {
@@ -25,7 +23,7 @@ pipeline {
                 echo 'Building Prod..'
                 sh returnStatus: true, script: 'terraform workspace new prod'
                 sh "terraform init"
-                sh "terraform apply -auto-approve -var-file=prod.tfvars"
+                sh "ansible-playbook terraform.yml -e app_env=prod"
             }
         }
     }
