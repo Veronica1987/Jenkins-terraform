@@ -4,10 +4,16 @@ pipeline {
       PATH = "${PATH}:${getTerraformPath()}"
 }
     stages {
-        stage('terraform destroy') {
+        stage('terraform init') {
             steps {
                 echo 'Building..'
-                sh "terraform destroy -auto-approve"
+                sh "terraform init"
+            }
+        }
+        stage('terraform apply') {
+            steps {
+                echo 'Building..'
+                sh "terraform apply -auto-approve"
             }
         }
     }
