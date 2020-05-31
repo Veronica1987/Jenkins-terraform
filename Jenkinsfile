@@ -4,6 +4,14 @@ pipeline {
       PATH = "${PATH}:${getTerraformPath()}"
 }
     stages {
+        stage('S3 - create bucket') {
+            steps {
+                echo 'Creating bucket'
+                script{
+                  getTerraformPath('jenkinsterraformbucket1215')
+                }
+            }
+        }
         stage('terraform init and apply -dev') {
             steps {
                 echo 'Building dev..'
@@ -15,7 +23,7 @@ pipeline {
         stage('terraform init apply and apply -prod') {
             steps {
                 echo 'Building Prod..'
-                sh label: '', returnStatus: true, script: 'terraform workspace new prod'
+                sh returnStatus: true, script: 'terraform workspace new prod'
                 sh "terraform init"
                 sh "terraform apply -auto-approve -var-file=prod.tfvars"
             }
@@ -29,3 +37,7 @@ def getTerraformPath(){
 }
 
 //Use the Jenkins pipeline Syntax to update tfHome
+
+def createS3Bucket(bucketName){
+  sh returnStatus: true, script: "aws create mb bucket-name --region=us-east-1"
+}
